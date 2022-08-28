@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:note_post/constants/routes.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -41,42 +42,46 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(hintText: 'Enter your email here'),
-            ),
-            TextField(
+            decoration:
+                const InputDecoration(hintText: 'Enter your email here'),
+          ),
+          TextField(
             controller: _password,
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
-            decoration: const InputDecoration(hintText: 'Enter your password here'),
-            ),
-            TextButton(
+            decoration:
+              const InputDecoration(hintText: 'Enter your password here'),
+          ),
+          TextButton(
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-                devtools.log(userCredential.toString());
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
                 if (!mounted) return;
-                Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
-              }
-              on FirebaseAuthException catch (e) {
-                if(e.code == 'user-not-found')
-                {
+                Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false,);
+                } on FirebaseAuthException catch (e) {
+                if (e.code == 'user-not-found') {
                   devtools.log('User not found');
-                }
-                else if(e.code == 'wrong-password')
-                {
+                } else if (e.code == 'wrong-password') {
                   devtools.log('Wrong password');
                 }
               }
             },
             child: const Text('Login'),
-            ),
-          TextButton(onPressed: () {
-            Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
-          }, 
-          child: const Text('Register') 
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                (route) => false,
+              );
+            },
+            child: const Text('Not Registered yet?Register here'),
           )
         ],
       ),
