@@ -1,12 +1,10 @@
-// ignore_for_file: avoid_print
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:note_post/views/login_view.dart';
+import 'package:note_post/views/notes_view.dart';
 import 'package:note_post/views/register_view.dart';
 import 'package:note_post/views/verify_email_view.dart';
-
 import 'firebase_options.dart';
 
 void main() {
@@ -27,6 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomePage(),
       routes: {
+        'home' :(context) => const HomePage(),
         '/login/' : (context) => const LoginView(),
         '/register/' : (context) => const RegisterView()
       },
@@ -48,14 +47,14 @@ class HomePage extends StatelessWidget {
               final user = FirebaseAuth.instance.currentUser;
               if(user != null) {
                 if(user.emailVerified) {
-                  print('Email is verified');
+                  return const NotesView();
                 } else {
                   return const VerifyEmailView(); 
                 }
               } else {
                 return const LoginView();
               }
-              return const Text('Done');
+              
             default : return const CircularProgressIndicator();
             
           }
