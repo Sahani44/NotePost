@@ -1,6 +1,6 @@
+import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:developer' as devtools show log;
 
 import 'package:note_post/constants/routes.dart';
 
@@ -51,7 +51,7 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
             autocorrect: false,
             decoration:
-              const InputDecoration(hintText: 'Enter your password here'),
+                const InputDecoration(hintText: 'Enter your password here'),
           ),
           TextButton(
             onPressed: () async {
@@ -63,13 +63,23 @@ class _LoginViewState extends State<LoginView> {
                   password: password,
                 );
                 if (!mounted) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false,);
-                } on FirebaseAuthException catch (e) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  notesRoute,
+                  (route) => false,
+                );
+              } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  devtools.log('User not found');
+                  showErrorDialog(context, 'User not found');
                 } else if (e.code == 'wrong-password') {
-                  devtools.log('Wrong password');
+                  showErrorDialog(context, 'Wrong password');
+                } else if (e.code == 'invalid-email') {
+                  showErrorDialog(context,'Invalid email');
+                } else {
+                  showErrorDialog(context,e.code);
                 }
+              } catch (e) {
+                devtools.log(e.toString());
+                showErrorDialog(context,e.toString());
               }
             },
             child: const Text('Login'),
@@ -81,10 +91,30 @@ class _LoginViewState extends State<LoginView> {
                 (route) => false,
               );
             },
-            child: const Text('Not Registered yet?Register here'),
+            child: const Text('Not Registered yet? Register here'),
           )
         ],
       ),
     );
   }
+}
+
+Future<void> showErrorDialog(BuildContext context, String text) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('An Error occured'),
+        content: Text(text),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      );
+    },
+  );
 }
