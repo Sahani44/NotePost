@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:note_post/constants/routes.dart';
 import 'package:note_post/services/auth/auth_service.dart';
 import 'package:note_post/services/crud/notes_services.dart';
-import '../enums/menu_actions.dart';
+import '../../enums/menu_actions.dart';
 
 
 class NotesView extends StatefulWidget {
@@ -34,10 +35,12 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('Notes'),
         actions: [
+          IconButton(onPressed: () {
+            Navigator.of(context).pushNamed(newNoteRoute);
+          }, icon: const Icon(Icons.add)),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch(value) {
-                
                 case MenuAction.logout:
                   final shouldLogOut = await showLogOutDialog(context);
                   if(shouldLogOut) {
