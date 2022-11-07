@@ -65,7 +65,6 @@ class NotesServices {
       _db = db;
 
       // create the user table
-
       await db.execute(createUserTable);
       //create notes table 
       await db.execute(createNoteTable);
@@ -141,7 +140,7 @@ class NotesServices {
     await _ensureDBIsOpen();
     final db = _getDatabaseOrThrow();
 
-    // make sure owner exists in the database with the correct id 
+    // make sure owner(/user sent in the func. call) exists in the database with the correct id 
 
     final dbUser = await getUser(email: owner.email); 
     if (dbUser != owner) {
